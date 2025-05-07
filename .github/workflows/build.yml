@@ -1,20 +1,18 @@
 name: Docker Build
+
 on:
   push:
     branches: [ main ]
     paths: [ 'containers/**' ]
   pull_request:
-      branches: [ main ]
-      paths: [ 'containers/**' ]
+    branches: [ main ]
+    paths: [ 'containers/**' ]
 
 env:
-  GHCR_REPO: ghcr.io/${{ github.repository }}
-
-permissions:
-  contents: read
-  packages: write
+  REGISTRY: ghcr.io
 
 jobs:
+  # Gets all changed containers and initiates the build for each of them.
   changed-containers:
     runs-on: ubuntu-latest
     steps:
@@ -32,7 +30,7 @@ jobs:
           for file in ${ALL_CHANGED_FILES}; do
             echo "$file was changed"
           done
-          
+
       - name: Get all directories in containers dir that have changed files
         id: changed_dirs
         env:
@@ -59,119 +57,54 @@ jobs:
     outputs:
       changed_dirs: ${{ steps.changed_dirs.outputs.changed_dirs }}
 
-
+  # Builds the Docker images for the changed containers.
   build-containers:
     needs: changed-containers
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     if: ${{ needs.changed-containers.outputs.changed_dirs != '[]' }}
     strategy:
       matrix:
         container: ${{ fromJson(needs.changed-containers.outputs.changed_dirs) }}
-        platform:
-          - linux/amd64
-          - linux/arm64
-        runner:
-          - ubuntu-latest
-          - ubuntu-latest-arm-m
-        exclude:
-          - platform: linux/arm64
-            runner: ubuntu-latest
-          - platform: linux/amd64
-            runner: ubuntu-latest-arm-m
     steps:
       - uses: actions/checkout@v4.2.2
-      - name: Prepare
-        run: |
-          platform=${{ matrix.platform }}
-          echo "PLATFORM_PAIR=${platform//\//-}" >> $GITHUB_ENV
+      - uses: docker/setup-buildx-action@v3.10.0
 
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@902fa8ec7d6ecbf8d84d538b9b233a880e428804 # v5.7.0
-        with:
-          images: |
-            ${{ env.GHCR_REPO }}/${{ matrix.container }}
-            
-      - name: Login to GHCR
+      # Login to the registry except for pull requests
+      - name: Log into registry ${{ env.REGISTRY }}
         if: github.event_name != 'pull_request'
-        uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.4.0
+        uses: docker/login-action@v3.4.0
         with:
-          registry: ghcr.io
+          registry: ${{ env.REGISTRY }}
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@b5ca514318bd6ebac0fb2aedd5d36ec1b5c232a2 # v3.10.0
-
-      - name: Build and push by digest
-        id: build
-        uses: docker/build-push-action@471d1dc4e07e5cdedd4c2171150001c434f0b7a4 # v6.15.0
-        with:
-          context: containers/${{ matrix.container }}
-          platforms: ${{ matrix.platform }}
-          labels: ${{ steps.meta.outputs.labels }}
-          outputs: type=image,"name=${{ env.GHCR_REPO }}/${{ matrix.container }}",push-by-digest=true,name-canonical=true,push=${{ github.event_name != 'pull_request' }}
-          cache-from: type=gha,scope=build-${{ matrix.container }}-${{ env.PLATFORM_PAIR }}
-          cache-to: type=gha,scope=build-${{ matrix.container }}-${{ env.PLATFORM_PAIR }},mode=max
-
-      - name: Export digest
-        run: |
-          mkdir -p ${{ runner.temp }}/digests
-          digest="${{ steps.build.outputs.digest }}"
-          touch "${{ runner.temp }}/digests/${digest#sha256:}"
-
-      - name: Upload digest
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        with:
-          name: digests-${{ env.PLATFORM_PAIR }}
-          path: ${{ runner.temp }}/digests/*
-          if-no-files-found: error
-          retention-days: 1
-
-  merge:
-    runs-on: ubuntu-latest
-    needs: build-containers
-    if: github.event_name != 'pull_request'
-    strategy:
-      matrix:
-        container: ${{ fromJson(needs.changed-containers.outputs.changed_dirs) }}
-    steps:
-      - name: Download digests
-        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4.2.1
-        with:
-          path: ${{ runner.temp }}/digests
-          pattern: digests-*
-          merge-multiple: true
-
-      - name: Login to GHCR
-        uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.4.0
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@b5ca514318bd6ebac0fb2aedd5d36ec1b5c232a2 # v3.10.0
-
-      - name: Docker meta
+      # Extract metadata (tags, labels) for Docker
+      - name: Extract Docker metadata
         id: meta
-        uses: docker/metadata-action@902fa8ec7d6ecbf8d84d538b9b233a880e428804 # v5.7.0
+        uses: docker/metadata-action@v5.7.0
+        env:
+          IMAGE_NAME: ${{ github.repository }}/${{ matrix.container }}
         with:
-          images: |
-            ${{ env.GHCR_REPO }}/${{ matrix.container }}
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
+            type=schedule,pattern=nightly
             type=ref,event=branch
             type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
+            type=match,pattern=${{ matrix.container }}-(.*),group=1
             type=sha
 
-      - name: Create manifest list and push
-        working-directory: ${{ runner.temp }}/digests
-        run: |
-          docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
-            $(printf '${{ env.GHCR_REPO }}/${{ matrix.container}}@sha256:%s ' *)
-
-      - name: Inspect image
-        run: |
-          docker buildx imagetools inspect ${{ env.GHCR_REPO }}/${{ matrix.container }}:${{ steps.meta.outputs.version }}
+      # Build and push Docker image with Buildx (don't push on PR)
+      - name: Build and push Docker image
+        id: build-and-push
+        uses: docker/build-push-action@v6.16.0
+        with:
+          context: containers/${{ matrix.container }}
+          platforms: linux/amd64
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
