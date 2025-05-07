@@ -5,5 +5,15 @@
   ],
   "prHourlyLimit": 0,
   "prConcurrentLimit": 0,
-  "platformCommit": "enabled"
+  "platformCommit": "enabled",
+  "customManagers": [
+    {
+      "customType": "regex",
+      "fileMatch": ["/.*Dockerfile$/"],
+      "matchStrings": [
+        "#\\s*renovate:\\s*datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s.*?_VERSION=\"(?<currentValue>.*)\"\\s"
+      ],
+      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
+    }
+  ]
 }
