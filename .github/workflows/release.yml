@@ -19,10 +19,10 @@ jobs:
       - name: Extract container name from tag
         id: extract_container_name
         # The tag is in the format container_name-v1.2.3
-        # This step splits the tag on the first dash and outputs the container name.
+        # This step splits the tag on the last dash and outputs the container name.
         # Will error if the tag doesn't contain a dash.
         run: |
-          CONTAINER_NAME=$(echo "${GITHUB_REF_NAME}" | cut -d'-' -f1)
+          CONTAINER_NAME=$(echo "${GITHUB_REF_NAME}" | rev | cut -d'-' -f2- | rev)
           if [[ "${CONTAINER_NAME}" == "${GITHUB_REF_NAME}" ]]; then
             echo "Error: The tag ${GITHUB_REF_NAME} doesn't contain a dash."
             exit 1
