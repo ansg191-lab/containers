@@ -110,7 +110,7 @@ jobs:
           context: containers/${{ matrix.container }}
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
-          outputs: type=image,"name=${{ env.GHCR_REPO }}/${{ matrix.container }}",push-by-digest=true,name-canonical=true,push=true
+          outputs: type=image,"name=${{ env.GHCR_REPO }}/${{ matrix.container }}",push-by-digest=true,name-canonical=true,push=${{ github.event_name != 'pull_request' }}
           cache-from: type=gha,scope=build-${{ matrix.container }}-${{ env.PLATFORM_PAIR }}
           cache-to: type=gha,scope=build-${{ matrix.container }}-${{ env.PLATFORM_PAIR }},mode=max
 
