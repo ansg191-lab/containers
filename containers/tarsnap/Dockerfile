@@ -25,7 +25,7 @@ ADD --checksum=sha256:bebdbe1e6e91233755beb42ef0b4adbefd9573455258f009fb331556c7
 RUN tar -xzf tarsnap-autoconf-$TARSNAP_VERSION.tgz && \
     cd tarsnap-autoconf-$TARSNAP_VERSION && \
     ./configure --prefix /app && \
-    make all && \
+    make -j $(nproc) all && \
     make install
 
 # Final stage
