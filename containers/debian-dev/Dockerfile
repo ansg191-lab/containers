@@ -68,7 +68,9 @@ RUN apt-get update && \
         traceroute \
         mtr \
         iperf3 \
-        kubernetes-client && \
+        kubernetes-client \
+        # swaks: A tool for SMTP testing and debugging
+        swaks && \
     rm -rf /var/lib/apt/lists/* && \
     # Rename batcat to bat
     ln -s /usr/bin/batcat /usr/local/bin/bat
