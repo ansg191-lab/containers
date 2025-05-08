@@ -1,6 +1,6 @@
 FROM ghcr.io/ansg191-lab/containers/tarsnap:v1.0.41.2 AS tarsnap-base
 
-FROM python:3.13.1-alpine3.21
+FROM python:3.13.3-alpine3.21@sha256:18159b2be11db91f84b8f8f655cd860f805dbd9e49a583ddaac8ab39bf4fe1a7
 
 # Prevents Python from writing pyc files.
 ENV PYTHONDONTWRITEBYTECODE=1
