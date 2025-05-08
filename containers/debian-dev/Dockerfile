@@ -76,7 +76,7 @@ RUN apt-get update && \
 
 ARG TARGETARCH
 # renovate: datasource=github-releases packageName=kubernetes/kubernetes
-ARG KUBECTL_VERSION="v1.32.0"
+ARG KUBECTL_VERSION="v1.33.0"
 ADD --chmod=0755 \
     "https://dl.k8s.io/release/$KUBECTL_VERSION/bin/linux/$TARGETARCH/kubectl" \
     /usr/local/bin/kubectl
