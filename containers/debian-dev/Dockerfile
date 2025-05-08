@@ -68,12 +68,18 @@ RUN apt-get update && \
         traceroute \
         mtr \
         iperf3 \
-        kubernetes-client \
         # swaks: A tool for SMTP testing and debugging
         swaks && \
     rm -rf /var/lib/apt/lists/* && \
     # Rename batcat to bat
     ln -s /usr/bin/batcat /usr/local/bin/bat
+
+ARG TARGETARCH
+# renovate: datasource=github-releases packageName=kubernetes/kubernetes
+ARG KUBECTL_VERSION="v1.32.0"
+ADD --chmod=0755 \
+    "https://dl.k8s.io/release/$KUBECTL_VERSION/bin/linux/$TARGETARCH/kubectl" \
+    /usr/local/bin/kubectl
 
 COPY --from=helix-builder /app/helix/target/debian/helix*.deb /tmp/
 RUN dpkg -i /tmp/helix*.deb && rm -rf /tmp/helix*.deb
