@@ -17,7 +17,7 @@ WORKDIR /app
 
 # Download tarsnap source code and verify its integrity
 # renovate: datasource=github-tags packageName=Tarsnap/tarsnap
-ARG TARSNAP_VERSION="1.0.40"
+ARG TARSNAP_VERSION="1.0.41"
 ADD --checksum=sha256:bccae5380c1c1d6be25dccfb7c2eaa8364ba3401aafaee61e3c5574203c27fd5 \
     https://www.tarsnap.com/download/tarsnap-autoconf-$TARSNAP_VERSION.tgz /app/
 
