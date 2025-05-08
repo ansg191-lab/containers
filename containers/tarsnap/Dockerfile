@@ -31,7 +31,7 @@ RUN tar -xzf tarsnap-autoconf-$TARSNAP_VERSION.tgz && \
 # Final stage
 FROM base AS final
 
-# Create a non-priviliged user
+# Create a non-privileged user
 ARG UID=10001
 RUN adduser \
     --disabled-password \
