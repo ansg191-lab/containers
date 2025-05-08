@@ -34,7 +34,7 @@ jobs:
 
   build-containers:
     needs: changed-containers
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.runner }}
     strategy:
       matrix:
         platform:
