@@ -1,4 +1,4 @@
-FROM ghcr.io/ansg191-lab/containers/tarsnap:v1.0.41.2 AS tarsnap-base
+FROM ghcr.io/ansg191-lab/containers/tarsnap:v1.0.41.2@sha256:fc62440e7413315bca49e7d15fe2e6c6ad033a37b9c5890547555dc58e57d852 AS tarsnap-base
 
 FROM python:3.13.3-alpine3.21@sha256:18159b2be11db91f84b8f8f655cd860f805dbd9e49a583ddaac8ab39bf4fe1a7
 
