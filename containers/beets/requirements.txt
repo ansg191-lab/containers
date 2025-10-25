@@ -11,6 +11,7 @@ cffi==2.0.0
 charset-normalizer==3.4.4
 confuse==2.0.1
 decorator==5.2.1
+discogs-client==2.3.0
 filetype==1.2.0
 fonttools==4.60.1
 gazelle-origin @ git+https://github.com/spinfast319/gazelle-origin@d58cd6dec90f196729a31f67240d093afbc9acf6
