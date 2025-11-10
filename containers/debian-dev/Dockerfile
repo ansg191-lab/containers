@@ -5,7 +5,7 @@ FROM rust:1.86-bookworm@sha256:300ec56abce8cc9448ddea2172747d048ed902a3090e6b57b
 # renovate: datasource=github-releases packageName=cargo-bins/cargo-binstall
 ARG BINSTALL_VERSION="v1.12.4"
 # renovate: datasource=crate packageName=cargo-deb
-ARG CARGO_DEB_VERSION="2.12.1"
+ARG CARGO_DEB_VERSION="3.0.0"
 
 WORKDIR /app
 ADD --chmod=0755 \
