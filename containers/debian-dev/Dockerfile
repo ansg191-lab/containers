@@ -9,7 +9,7 @@ ARG CARGO_DEB_VERSION="2.12.1"
 
 WORKDIR /app
 ADD --chmod=0755 \
-    --checksum=sha256:0a8a9f249aaee1901c147feb70b94dfcbc31423f89cf722279f44ed63927611e \
+    --checksum=sha256:c2e963fbab3bdd8653b59c28d349bf85740cf4998e5e398d250dcd2884cd667d \
     https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh install-from-binstall-release.sh
 RUN bash install-from-binstall-release.sh && \
     cargo binstall cargo-deb@${CARGO_DEB_VERSION}
