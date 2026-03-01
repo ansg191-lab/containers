@@ -84,7 +84,7 @@ then
   VIPRET=$?
   VIPBODY=`cat "${WORKDIR}/vip.json"`
 
-  if [ $VIPRET -ne 0 ] || [ "${VIPHTTP}" -ne 200 ]
+  if [ $VIPRET -ne 0 ] || [ "${VIPHTTP}" -lt 200 ] || [ "${VIPHTTP}" -ge 300 ]
   then
     echo "VIP purchase failed! HTTP ${VIPHTTP}"
   else
