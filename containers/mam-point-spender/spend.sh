@@ -78,12 +78,22 @@ then
 fi
 
 # Maximize VIP
-if [ "x$VIP" != "x" ]
+if [ "${VIP}" -ne 0 ] 2>/dev/null
 then
-  VIPRESULT=`curl -s -b ${WORKDIR}/MAM.cookies -c ${WORKDIR}/MAM.cookies ${VIPURL}${TIMESTAMP} 2>/dev/null | jq .success`
-  if [ "x$VIPRESULT" != "xtrue" ]
+  VIPHTTP=`curl -s -o "${WORKDIR}/vip.json" -w '%{http_code}' -b ${WORKDIR}/MAM.cookies -c ${WORKDIR}/MAM.cookies ${VIPURL}${TIMESTAMP} 2>/dev/null`
+  VIPRET=$?
+  VIPBODY=`cat "${WORKDIR}/vip.json"`
+
+  if [ $VIPRET -ne 0 ] || [ "${VIPHTTP}" -ne 200 ]
   then
-    echo VIP purchase failed!
+    echo "VIP purchase failed! HTTP ${VIPHTTP}"
+  else
+    VIPRESULT=`echo "$VIPBODY" | jq -r '.success' 2>/dev/null`
+    if [ "${VIPRESULT}" != "true" ]
+    then
+      VIPERROR=`echo "$VIPBODY" | jq -r '.error // "unknown error"' 2>/dev/null`
+      echo "VIP purchase failed! Error: ${VIPERROR}"
+    fi
   fi
 fi
 
