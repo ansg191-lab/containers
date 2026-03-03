@@ -3,7 +3,8 @@ FROM debian:13.2-slim@sha256:e711a7b30ec1261130d0a121050b4ed81d7fb28aeabcf4ea0c7
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         netcat-openbsd \
-        curl && \
+        curl \
+        jq && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
