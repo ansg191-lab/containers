@@ -32,11 +32,16 @@ send_discord() {
 	payload=$(jq -n --arg title "$title" --arg description "$description" --argjson color "$color" \
 		'{"embeds":[{"title":$title,"description":$description,"color":$color}]}')
 
-	if ! curl -s -o /dev/null --connect-timeout 10 --max-time 30 \
+	local response http_code body
+	response=$(curl -s -w "\n%{http_code}" --connect-timeout 10 --max-time 30 \
 		-X POST "$DISCORD_WEBHOOK_URL" \
 		-H "Content-Type: application/json" \
-		-d "$payload"; then
-		echo "Warning: Failed to send Discord notification."
+		-d "$payload" 2>&1) || true
+	http_code=$(tail -n1 <<< "$response")
+	body=$(head -n-1 <<< "$response")
+
+	if [[ "$http_code" != 2* ]]; then
+		echo "Warning: Discord webhook returned HTTP $http_code: $body"
 	fi
 }
 
