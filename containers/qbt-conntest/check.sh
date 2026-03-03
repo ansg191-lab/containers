@@ -39,7 +39,7 @@ send_discord() {
 STATE="unknown"
 
 while true; do
-	if nc -z "$QBT_IP" "$QBT_PORT" 2>/dev/null; then
+	if nc -z -w 5 "$QBT_IP" "$QBT_PORT" 2>/dev/null; then
 		echo "Connection to $QBT_IP:$QBT_PORT successful."
 		if [ "$STATE" = "down" ]; then
 			echo "State changed: down -> up. Sending recovery notification."
