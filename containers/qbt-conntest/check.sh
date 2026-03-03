@@ -28,9 +28,12 @@ send_discord() {
 	local title="$2"
 	local description="$3"
 
-	curl -s -o /dev/null -X POST "$DISCORD_WEBHOOK_URL" \
+	if ! curl -s -o /dev/null --connect-timeout 10 --max-time 30 \
+		-X POST "$DISCORD_WEBHOOK_URL" \
 		-H "Content-Type: application/json" \
-		-d "{\"embeds\":[{\"title\":\"$title\",\"description\":\"$description\",\"color\":$color}]}"
+		-d "{\"embeds\":[{\"title\":\"$title\",\"description\":\"$description\",\"color\":$color}]}"; then
+		echo "Warning: Failed to send Discord notification."
+	fi
 }
 
 STATE="unknown"
