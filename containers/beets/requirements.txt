@@ -24,7 +24,7 @@ joblib==1.5.2
 jsonpath-rw==1.4.0
 langdetect==1.0.9
 lap==0.5.12
-lazy_loader==0.4
+lazy_loader==0.5
 librosa==0.10.2.post1
 llvmlite==0.45.1
 mediafile==0.12.0
