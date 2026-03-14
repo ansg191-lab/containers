@@ -19,7 +19,7 @@ h11==0.16.0
 httpcore==1.0.9
 httpx==0.28.1
 idna==3.11
-jellyfish==1.2.0
+jellyfish==1.2.1
 joblib==1.5.2
 jsonpath-rw==1.4.0
 langdetect==1.0.9
