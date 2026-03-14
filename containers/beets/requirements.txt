@@ -23,7 +23,7 @@ jellyfish==1.2.0
 joblib==1.5.2
 jsonpath-rw==1.4.0
 langdetect==1.0.9
-lap==0.5.12
+lap==0.5.13
 lazy_loader==0.4
 librosa==0.10.2.post1
 llvmlite==0.45.1
