@@ -20,7 +20,7 @@ httpcore==1.0.9
 httpx==0.28.1
 idna==3.11
 jellyfish==1.2.0
-joblib==1.5.2
+joblib==1.5.3
 jsonpath-rw==1.4.0
 langdetect==1.0.9
 lap==0.5.12
