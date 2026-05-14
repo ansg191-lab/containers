@@ -15,7 +15,7 @@ RUN bash install-from-binstall-release.sh && \
     cargo binstall cargo-deb@${CARGO_DEB_VERSION}
 
 # renovate: datasource=github-releases packageName=helix-editor/helix versioning=loose
-ARG HELIX_VERSION="25.01.1"
+ARG HELIX_VERSION="25.07.1"
 RUN git clone https://github.com/helix-editor/helix.git --branch ${HELIX_VERSION} --depth 1
 WORKDIR /app/helix
 
