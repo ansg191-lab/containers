@@ -1,6 +1,6 @@
 FROM debian:13.2@sha256:0d01188e8dd0ac63bf155900fad49279131a876a1ea7fac917c62e87ccb2732d AS base
 
-FROM rust:1.86-bookworm@sha256:300ec56abce8cc9448ddea2172747d048ed902a3090e6b57babb2bf19f754081 AS helix-builder
+FROM rust:1.98-bookworm@sha256:828077e0f5ed0401fbd9cb5b4d5dedca23bd13c7fe032f3e8b7313e7acd2a57f AS helix-builder
 
 # renovate: datasource=github-releases packageName=cargo-bins/cargo-binstall
 ARG BINSTALL_VERSION="v1.12.4"
