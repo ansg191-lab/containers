@@ -1,4 +1,4 @@
-FROM python:3.13.9-trixie@sha256:b7fede1ea996f58b93755cf87d2b3bd72890268061dbb6aa9058e163c2936d4b
+FROM python:3.14.8-trixie@sha256:a11116e648ddd8a05e1120014c8e6ac259f718040b67e2dcd6a7c0b7bab3ff2c
 
 # Prevents Python from writing pyc files.
 ENV PYTHONDONTWRITEBYTECODE=1
