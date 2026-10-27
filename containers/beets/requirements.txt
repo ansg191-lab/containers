@@ -6,7 +6,7 @@ beets-check @ git+https://github.com/geigerzaehler/beets-check.git@d54f4211e8bc6
 beets-extrafiles @ git+https://github.com/ansg191/beets-extrafiles.git@9b41c85415e129c3c0028fd2d9a3f391c6a8cddf
 beets-originquery @ git+https://github.com/MxMarx/beets-originquery.git@ec9f3d0149cc3779866c4dc033cc0263ae6b1654
 beets==2.4.0
-certifi==2025.10.5
+certifi==2025.11.12
 cffi==2.0.0
 charset-normalizer==3.4.4
 confuse==2.0.1
